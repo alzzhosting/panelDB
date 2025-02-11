@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Panel Gratis</title>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white flex justify-center items-center h-screen">
+
+  <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
+    <h2 class="text-2xl font-bold mb-4">Buat Panel Gratis</h2>
+
+    <input type="text" id="namaPanel" placeholder="Nama Panel" class="w-full px-4 py-2 mb-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500">
+
+    <input type="text" id="ramPanel" value="3 GB" disabled class="w-full px-4 py-2 mb-3 border border-gray-600 rounded-md bg-gray-700 text-gray-400">
+
+    <button onclick="simpanData()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition">
+      💾 Simpan Data
+    </button>
+  </div>
+
+  <script>
+    // 🔥 Konfigurasi Firebase (GANTI DENGAN CONFIG MILIKMU)
+    const firebaseConfig = {
+  apiKey: "AIzaSyBx5wLEcnvY6J_7AZ5tjiki8LJfmwCNLTw",
+  authDomain: "paneldb-85bed.firebaseapp.com",
+  projectId: "paneldb-85bed",
+  storageBucket: "paneldb-85bed.firebasestorage.app",
+  messagingSenderId: "729518192213",
+  appId: "1:729518192213:web:1874d5b2f8b86f714a86dc"
+};
+
+    // 🔥 Inisialisasi Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function simpanData() {
+      let namaPanel = document.getElementById("namaPanel").value;
+      let ramPanel = "3 GB"; // Fix 3GB
+
+      if (namaPanel.trim() === "") {
+        alert("Nama Panel tidak boleh kosong!");
+        return;
+      }
+
+      // Simpan ke Firestore
+      db.collection("panels").add({
+          nama: namaPanel,
+          ram: ramPanel,
+          waktu: new Date()
+        })
+        .then(() => {
+          alert("Data berhasil disimpan!");
+          document.getElementById("namaPanel").value = "";
+        })
+        .catch((error) => {
+          console.error("Gagal menyimpan data: ", error);
+          alert("Gagal menyimpan data.");
+        });
+    }
+  </script>
+
+</body>
+
+</html>

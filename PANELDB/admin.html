@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex justify-center items-center h-screen">
+    
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
+        <h2 class="text-2xl font-bold mb-4">Admin Panel</h2>
+
+        <div id="panelList" class="text-left"></div>
+    </div>
+
+    <script>
+        // 🔥 Konfigurasi Firebase (GANTI DENGAN CONFIG MILIKMU)
+        const firebaseConfig = {
+  apiKey: "AIzaSyBx5wLEcnvY6J_7AZ5tjiki8LJfmwCNLTw",
+  authDomain: "paneldb-85bed.firebaseapp.com",
+  projectId: "paneldb-85bed",
+  storageBucket: "paneldb-85bed.firebasestorage.app",
+  messagingSenderId: "729518192213",
+  appId: "1:729518192213:web:1874d5b2f8b86f714a86dc",
+};
+
+        // 🔥 Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Fungsi untuk menampilkan data dari Firestore
+        function tampilkanData() {
+            let panelList = document.getElementById("panelList");
+            panelList.innerHTML = "<p class='text-gray-400'>Loading...</p>";
+
+            db.collection("panels").orderBy("waktu", "desc").get()
+            .then((querySnapshot) => {
+                panelList.innerHTML = "";
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    panelList.innerHTML += `
+                        <div class="bg-gray-700 p-3 rounded-md mb-2">
+                            <p><strong>Nama Panel:</strong> ${data.nama}</p>
+                            <p><strong>RAM:</strong> ${data.ram}</p>
+                            <button onclick="hapusData('${doc.id}')" class="mt-2 bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md text-white">
+                                🗑 Hapus
+                            </button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // Fungsi untuk menghapus data dari Firestore
+        function hapusData(id) {
+            if (confirm("Yakin ingin menghapus panel ini?")) {
+                db.collection("panels").doc(id).delete()
+                .then(() => {
+                    alert("Panel berhasil dihapus!");
+                    tampilkanData();
+                })
+                .catch((error) => {
+                    console.error("Gagal menghapus data: ", error);
+                    alert("Gagal menghapus data.");
+                });
+            }
+        }
+
+        // Jalankan saat halaman dimuat
+        tampilkanData();
+    </script>
+
+</body>
+</html>
